@@ -21,6 +21,7 @@ function renderHTML(): string {
     body { font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', sans-serif; }
     .gradient-hero { background: linear-gradient(135deg, #E60023 0%, #ad081b 100%); }
     .gradient-accent { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    .gradient-tiktok { background: linear-gradient(135deg, #ff0050 0%, #00f2fe 100%); }
     .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
     .tab-active { border-bottom: 2px solid #E60023; color: #fff; }
   </style>
@@ -36,13 +37,13 @@ function renderHTML(): string {
         </div>
         <div>
           <h1 class="font-bold text-lg leading-tight">Pinterest Media Studio</h1>
-          <p class="text-xs text-slate-400">All-in-One Downloader, Moodboard & Creative Suite</p>
+          <p class="text-xs text-slate-400">All-in-One Downloader, Moodboard & TikTok Video Suite</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
         <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Ready & Strict Verified
+          Reels Generator Live
         </span>
       </div>
     </div>
@@ -50,15 +51,18 @@ function renderHTML(): string {
 
   <!-- Sub Navigation Tabs -->
   <div class="border-b border-slate-800 bg-slate-900/30">
-    <div class="max-w-4xl mx-auto px-4 flex gap-8 text-sm font-semibold text-slate-400">
-      <button id="tabSingleBtn" class="py-3 tab-active transition-colors flex items-center gap-2">
+    <div class="max-w-4xl mx-auto px-4 flex gap-6 md:gap-8 text-xs md:text-sm font-semibold text-slate-400 overflow-x-auto">
+      <button id="tabSingleBtn" class="py-3 tab-active transition-colors flex items-center gap-2 whitespace-nowrap">
         🎯 Single Pin
       </button>
-      <button id="tabBatchBtn" class="py-3 hover:text-white transition-colors flex items-center gap-2">
+      <button id="tabBatchBtn" class="py-3 hover:text-white transition-colors flex items-center gap-2 whitespace-nowrap">
         📦 Batch & Board to ZIP
       </button>
-      <button id="tabMoodboardBtn" class="py-3 hover:text-white transition-colors flex items-center gap-2">
+      <button id="tabMoodboardBtn" class="py-3 hover:text-white transition-colors flex items-center gap-2 whitespace-nowrap">
         🖼️ One-Click Moodboard
+      </button>
+      <button id="tabReelsBtn" class="py-3 hover:text-white transition-colors flex items-center gap-2 whitespace-nowrap text-pink-400 font-bold">
+        ⚡ Board to TikTok/Reels
       </button>
     </div>
   </div>
@@ -73,7 +77,6 @@ function renderHTML(): string {
         <p class="text-slate-400 text-xs md:text-sm">รองรับรูปภาพความคมชัดสูงสุด วิดีโอ 1080p พร้อมดูดชุดโค้ดสี และปรับสัดส่วนสำหรับ Social Media</p>
       </div>
 
-      <!-- Input Box -->
       <div class="glass-card rounded-2xl p-4 md:p-6 shadow-2xl">
         <form id="extractForm" class="flex flex-col sm:flex-row gap-3">
           <input 
@@ -93,13 +96,11 @@ function renderHTML(): string {
         </form>
       </div>
 
-      <!-- Loading State -->
       <div id="singleLoading" class="hidden text-center py-10">
         <div class="inline-block animate-spin w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full mb-3"></div>
         <p class="text-sm text-slate-400">กำลังสกัดข้อมูล Original Media จาก Pinterest...</p>
       </div>
 
-      <!-- Single Result Card -->
       <div id="resultCard" class="hidden glass-card rounded-2xl p-6 shadow-2xl space-y-6">
         <div class="flex flex-col md:flex-row gap-6">
           <div class="w-full md:w-1/2 rounded-xl overflow-hidden bg-slate-900 border border-slate-800 flex items-center justify-center relative min-h-[320px]">
@@ -118,13 +119,11 @@ function renderHTML(): string {
               <p id="pinDesc" class="text-xs text-slate-300 mt-3 line-clamp-3 bg-slate-900/60 p-3 rounded-lg border border-slate-800/80"></p>
             </div>
 
-            <!-- Color Palette -->
             <div class="pt-2 border-t border-slate-800">
               <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">🎨 Color Palette (ชุดสี)</h4>
               <div id="paletteContainer" class="flex gap-2 flex-wrap"></div>
             </div>
 
-            <!-- Creative Action Buttons -->
             <div class="space-y-2 pt-2">
               <a 
                 id="downloadBtn" 
@@ -143,8 +142,8 @@ function renderHTML(): string {
                 <button id="openResizerBtn" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 font-medium py-2 rounded-lg text-xs border border-indigo-500/30">
                   📱 Social Resize
                 </button>
-                <button id="addToMoodboardBtn" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 font-medium py-2 rounded-lg text-xs border border-emerald-500/30">
-                  ➕ To Moodboard
+                <button id="addToMoodboardBtn" class="bg-pink-600/20 hover:bg-pink-600/30 text-pink-300 font-medium py-2 rounded-lg text-xs border border-pink-500/30">
+                  ⚡ Add to Reels
                 </button>
               </div>
             </div>
@@ -185,13 +184,17 @@ function renderHTML(): string {
         <p id="batchStatusText" class="text-sm text-slate-400">กำลังดึงภาพและแพ็กเป็นไฟล์ ZIP...</p>
       </div>
 
-      <!-- Batch Gallery Preview -->
       <div id="batchResultContainer" class="hidden space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="font-bold text-sm text-white">รายการที่ดึงสำเร็จ (<span id="batchSuccessCount">0</span> รายการ)</h3>
-          <button id="downloadZipBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow-lg shadow-emerald-500/20 flex items-center gap-1.5">
-            ⬇️ ดาวน์โหลดไฟล์ ZIP ทั้งหมด
-          </button>
+          <div class="flex gap-2">
+            <button id="sendBatchToReelsBtn" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1">
+              ⚡ ส่งไปทำ TikTok/Reel
+            </button>
+            <button id="downloadZipBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1">
+              ⬇️ ดาวน์โหลด ZIP
+            </button>
+          </div>
         </div>
         <div id="batchGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
       </div>
@@ -201,7 +204,7 @@ function renderHTML(): string {
     <section id="sectionMoodboard" class="hidden space-y-6">
       <div class="text-center mb-6">
         <h2 class="text-2xl md:text-3xl font-extrabold mb-2">🖼️ One-Click Moodboard Generator</h2>
-        <p class="text-slate-400 text-xs md:text-sm">รวมภาพที่เซฟไว้มาจัดเลย์เอาต์ Collage สวยงามระดับมือโปร พร้อม Export เป็นภาพ HD หรือ PDF</p>
+        <p class="text-slate-400 text-xs md:text-sm">รวมภาพที่เซฟไว้มาจัดเลย์เอาต์ Collage สวยงามระดับมือโปร พร้อม Export เป็นภาพ HD</p>
       </div>
 
       <div class="glass-card rounded-2xl p-6 shadow-2xl space-y-4">
@@ -220,14 +223,98 @@ function renderHTML(): string {
               ✨ จัดเลย์เอาต์ Moodboard
             </button>
             <button id="exportMoodboardBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow-lg shadow-emerald-500/20">
-              ⬇️ Export PNG ความคมชัดสูง
+              ⬇️ Export PNG
             </button>
           </div>
         </div>
 
-        <!-- Canvas Area -->
         <div class="bg-slate-950 rounded-xl border border-slate-800 p-4 flex items-center justify-center overflow-auto min-h-[400px]">
           <canvas id="moodboardCanvas" class="max-w-full h-auto rounded-lg shadow-2xl bg-slate-900"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: BOARD TO TIKTOK / REELS GENERATOR ==================== -->
+    <section id="sectionReels" class="hidden space-y-6">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 bg-pink-500/10 text-pink-400 border border-pink-500/20 px-3 py-1 rounded-full text-xs font-bold mb-2">
+          ✨ Next-Gen Feature 26
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold mb-2 bg-gradient-to-r from-pink-400 via-rose-300 to-indigo-400 bg-clip-text text-transparent">
+          ⚡ Board to TikTok / Reels Video Generator
+        </h2>
+        <p class="text-slate-400 text-xs md:text-sm max-w-xl mx-auto">
+          AI แปลงรูปภาพในบอร์ดให้กลายเป็นคลิปวิดีโอแนวตั้ง 9:16 อัตโนมัติ พร้อม Ken Burns Zooming, Smooth Transition และดนตรี Beat-Sync จังหวะเพลงลง TikTok/IG ทันที!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Controls Left -->
+        <div class="glass-card rounded-2xl p-5 shadow-2xl space-y-4 md:col-span-1">
+          <h3 class="font-bold text-sm text-white flex items-center gap-2">
+            ⚙️ ตั้งค่าการสร้างวิดีโอ
+          </h3>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">สไตล์ Transition & Effect:</label>
+            <select id="reelEffect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+              <option value="kenburns">🎬 Ken Burns Dynamic Zoom & Pan</option>
+              <option value="crossfade">✨ Smooth Dreamy Crossfade</option>
+              <option value="flash">⚡ Fast Beat Flash Pulse</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">ดนตรีประกอบ (AI Beat Track):</label>
+            <select id="reelMusic" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+              <option value="chill">🎵 Cozy Lo-Fi Sunset Beat (80 BPM)</option>
+              <option value="upbeat">🔥 Synthwave Energy Rush (120 BPM)</option>
+              <option value="aesthetic">✨ Cinematic Aesthetic Aura (70 BPM)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">ความยาวแต่ละรูป (วินาที):</label>
+            <input type="range" id="reelSpeed" min="1.5" max="4.0" step="0.5" value="2.5" class="w-full accent-pink-500" />
+            <div class="flex justify-between text-[10px] text-slate-500">
+              <span>เร็ว (1.5s)</span>
+              <span id="speedValText" class="text-pink-400 font-bold">2.5 วินาที / รูป</span>
+              <span>ช้า (4.0s)</span>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800 space-y-2">
+            <button 
+              id="generateReelBtn"
+              class="w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:opacity-95 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              สร้าง & อัดคลิปวิดีโอ 9:16
+            </button>
+            <button 
+              id="downloadReelBtn" 
+              class="hidden w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+            >
+              ⬇️ ดาวน์โหลดคลิป TikTok (MP4/WebM)
+            </button>
+          </div>
+        </div>
+
+        <!-- Phone Preview Right -->
+        <div class="glass-card rounded-2xl p-6 shadow-2xl md:col-span-2 flex flex-col items-center justify-center">
+          <div class="w-[250px] sm:w-[280px] aspect-[9/16] rounded-3xl overflow-hidden bg-black border-4 border-slate-800 shadow-2xl relative flex items-center justify-center">
+            <canvas id="reelsCanvas" class="w-full h-full object-cover"></canvas>
+            <video id="reelsVideoPreview" class="hidden w-full h-full object-cover" controls autoplay loop playsinline></video>
+            
+            <!-- Progress Overlay -->
+            <div id="reelRecordingBadge" class="hidden absolute top-4 left-4 bg-red-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1.5 animate-pulse">
+              <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+              RECORDING REEL...
+            </div>
+          </div>
+          <p id="reelStatusText" class="text-xs text-slate-400 mt-4 text-center">
+            กดปุ่ม "สร้าง & อัดคลิปวิดีโอ 9:16" เพื่อเรนเดอร์คลิปวิดีโอสั้นพร้อมเพลงอัตโนมัติ
+          </p>
         </div>
       </div>
     </section>
@@ -268,14 +355,16 @@ function renderHTML(): string {
     const tabSingleBtn = document.getElementById('tabSingleBtn');
     const tabBatchBtn = document.getElementById('tabBatchBtn');
     const tabMoodboardBtn = document.getElementById('tabMoodboardBtn');
+    const tabReelsBtn = document.getElementById('tabReelsBtn');
 
     const sectionSingle = document.getElementById('sectionSingle');
     const sectionBatch = document.getElementById('sectionBatch');
     const sectionMoodboard = document.getElementById('sectionMoodboard');
+    const sectionReels = document.getElementById('sectionReels');
 
     function switchTab(target) {
-      [tabSingleBtn, tabBatchBtn, tabMoodboardBtn].forEach(b => b.classList.remove('tab-active', 'text-white'));
-      [sectionSingle, sectionBatch, sectionMoodboard].forEach(s => s.classList.add('hidden'));
+      [tabSingleBtn, tabBatchBtn, tabMoodboardBtn, tabReelsBtn].forEach(b => b.classList.remove('tab-active', 'text-white'));
+      [sectionSingle, sectionBatch, sectionMoodboard, sectionReels].forEach(s => s.classList.add('hidden'));
 
       if (target === 'single') {
         tabSingleBtn.classList.add('tab-active', 'text-white');
@@ -287,12 +376,16 @@ function renderHTML(): string {
         tabMoodboardBtn.classList.add('tab-active', 'text-white');
         sectionMoodboard.classList.remove('hidden');
         renderMoodboard();
+      } else if (target === 'reels') {
+        tabReelsBtn.classList.add('tab-active', 'text-white');
+        sectionReels.classList.remove('hidden');
       }
     }
 
     tabSingleBtn.addEventListener('click', () => switchTab('single'));
     tabBatchBtn.addEventListener('click', () => switchTab('batch'));
     tabMoodboardBtn.addEventListener('click', () => switchTab('moodboard'));
+    tabReelsBtn.addEventListener('click', () => switchTab('reels'));
 
     // Global App State
     let currentMediaUrl = '';
@@ -363,7 +456,6 @@ function renderHTML(): string {
           previewImg.src = media.originalUrl;
           downloadBtnText.textContent = 'ดาวน์โหลดภาพ Original High-Res';
 
-          // Auto add to moodboard collection
           if (!savedMoodboardImages.includes(currentMediaUrl)) {
             savedMoodboardImages.push(currentMediaUrl);
           }
@@ -404,7 +496,8 @@ function renderHTML(): string {
     addToMoodboardBtn.addEventListener('click', () => {
       if (currentMediaUrl && !savedMoodboardImages.includes(currentMediaUrl)) {
         savedMoodboardImages.push(currentMediaUrl);
-        alert('เพิ่มภาพนี้เข้าสู่ Moodboard แล้ว!');
+        alert('เพิ่มภาพนี้เข้าสู่ Reels / Moodboard แล้ว!');
+        switchTab('reels');
       }
     });
 
@@ -417,6 +510,7 @@ function renderHTML(): string {
     const batchGrid = document.getElementById('batchGrid');
     const batchSuccessCount = document.getElementById('batchSuccessCount');
     const downloadZipBtn = document.getElementById('downloadZipBtn');
+    const sendBatchToReelsBtn = document.getElementById('sendBatchToReelsBtn');
 
     let extractedBatchItems = [];
 
@@ -490,6 +584,10 @@ function renderHTML(): string {
       link.click();
     });
 
+    sendBatchToReelsBtn.addEventListener('click', () => {
+      switchTab('reels');
+    });
+
     // ================= MOODBOARD GENERATOR LOGIC =================
     const moodboardCanvas = document.getElementById('moodboardCanvas');
     const moodboardRatio = document.getElementById('moodboardRatio');
@@ -509,11 +607,9 @@ function renderHTML(): string {
       moodboardCanvas.width = width;
       moodboardCanvas.height = height;
 
-      // Dark background
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, width, height);
 
-      // Draw Grid / Collage
       const count = Math.min(savedMoodboardImages.length, 6);
       if (count === 0) {
         ctx.fillStyle = '#64748b';
@@ -529,7 +625,6 @@ function renderHTML(): string {
       const cellW = (width - padding * (cols + 1)) / cols;
       const cellH = (height - 120 - padding * (rows + 1)) / rows;
 
-      // Draw Header title
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 32px Plus Jakarta Sans, sans-serif';
       ctx.textAlign = 'left';
@@ -549,7 +644,6 @@ function renderHTML(): string {
               ctx.beginPath();
               ctx.roundRect(x, y, cellW, cellH, 16);
               ctx.clip();
-              // Cover math
               const scale = Math.max(cellW / img.width, cellH / img.height);
               const sw = cellW / scale;
               const sh = cellH / scale;
@@ -572,6 +666,229 @@ function renderHTML(): string {
       const a = document.createElement('a');
       a.href = moodboardCanvas.toDataURL('image/png');
       a.download = 'pinterest_moodboard.png';
+      a.click();
+    });
+
+    // ================= TIKTOK / REELS GENERATOR LOGIC =================
+    const reelsCanvas = document.getElementById('reelsCanvas');
+    const reelsVideoPreview = document.getElementById('reelsVideoPreview');
+    const generateReelBtn = document.getElementById('generateReelBtn');
+    const downloadReelBtn = document.getElementById('downloadReelBtn');
+    const reelSpeed = document.getElementById('reelSpeed');
+    const speedValText = document.getElementById('speedValText');
+    const reelEffect = document.getElementById('reelEffect');
+    const reelMusic = document.getElementById('reelMusic');
+    const reelRecordingBadge = document.getElementById('reelRecordingBadge');
+    const reelStatusText = document.getElementById('reelStatusText');
+
+    let recordedReelBlob = null;
+
+    reelSpeed.addEventListener('input', () => {
+      speedValText.textContent = reelSpeed.value + ' วินาที / รูป';
+    });
+
+    // Web Audio Synthesizer for Real-time Lo-Fi / Beat Track
+    function createReelAudioStream(durationSec, mood) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const dest = audioCtx.createMediaStreamDestination();
+      const bpm = mood === 'upbeat' ? 120 : (mood === 'aesthetic' ? 70 : 80);
+      const beatInterval = 60 / bpm;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.15;
+      osc.connect(gain);
+      gain.connect(dest);
+
+      // Create ambient chord progression
+      osc.type = mood === 'upbeat' ? 'sawtooth' : 'sine';
+      osc.frequency.setValueAtTime(mood === 'upbeat' ? 140 : 220, audioCtx.currentTime);
+
+      const totalBeats = Math.ceil(durationSec / beatInterval);
+      for (let i = 0; i < totalBeats; i++) {
+        const time = audioCtx.currentTime + i * beatInterval;
+        const kickOsc = audioCtx.createOscillator();
+        const kickGain = audioCtx.createGain();
+        kickOsc.frequency.setValueAtTime(150, time);
+        kickOsc.frequency.exponentialRampToValueAtTime(0.01, time + 0.3);
+        kickGain.gain.setValueAtTime(0.4, time);
+        kickGain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+        kickOsc.connect(kickGain);
+        kickGain.connect(dest);
+        kickOsc.start(time);
+        kickOsc.stop(time + 0.3);
+      }
+
+      osc.start();
+      setTimeout(() => {
+        osc.stop();
+        audioCtx.close();
+      }, durationSec * 1000 + 500);
+
+      return dest.stream.getAudioTracks()[0];
+    }
+
+    generateReelBtn.addEventListener('click', async () => {
+      const imagesToRender = savedMoodboardImages.slice(0, 8);
+      if (imagesToRender.length === 0) {
+        alert('กรุณาดึงภาพอย่างน้อย 1-2 ภาพจาก Tab 1 หรือ Tab 2 ก่อนสร้างคลิปครับ!');
+        return;
+      }
+
+      const ctx = reelsCanvas.getContext('2d');
+      if (!ctx) return;
+
+      const W = 720;
+      const H = 1280;
+      reelsCanvas.width = W;
+      reelsCanvas.height = H;
+
+      reelsVideoPreview.classList.add('hidden');
+      reelsCanvas.classList.remove('hidden');
+      reelRecordingBadge.classList.remove('hidden');
+      downloadReelBtn.classList.add('hidden');
+      generateReelBtn.disabled = true;
+
+      // Load all images first
+      reelStatusText.textContent = 'กำลังดาวน์โหลดและเตรียมภาพทั้งหมด...';
+      const loadedImgs = [];
+      for (const src of imagesToRender) {
+        try {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.src = '/api/proxy-download?url=' + encodeURIComponent(src);
+          await new Promise((resolve) => {
+            img.onload = () => { loadedImgs.push(img); resolve(); };
+            img.onerror = () => resolve();
+          });
+        } catch {}
+      }
+
+      if (loadedImgs.length === 0) {
+        alert('ไม่สามารถโหลดภาพได้');
+        generateReelBtn.disabled = false;
+        reelRecordingBadge.classList.add('hidden');
+        return;
+      }
+
+      const secPerImg = parseFloat(reelSpeed.value);
+      const totalDuration = loadedImgs.length * secPerImg;
+      const effectType = reelEffect.value;
+      const musicMood = reelMusic.value;
+
+      // Setup MediaRecorder
+      const canvasStream = reelsCanvas.captureStream(30);
+      const audioTrack = createReelAudioStream(totalDuration, musicMood);
+      if (audioTrack) {
+        canvasStream.addTrack(audioTrack);
+      }
+
+      const mediaRecorder = new MediaRecorder(canvasStream, {
+        mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm'
+      });
+      const recordedChunks = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        recordedReelBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        const videoUrl = URL.createObjectURL(recordedReelBlob);
+        reelsVideoPreview.src = videoUrl;
+        reelsCanvas.classList.add('hidden');
+        reelsVideoPreview.classList.remove('hidden');
+        downloadReelBtn.classList.remove('hidden');
+        reelRecordingBadge.classList.add('hidden');
+        generateReelBtn.disabled = false;
+        reelStatusText.textContent = '🎉 เรนเดอร์คลิป TikTok 9:16 พร้อมเพลงสำเร็จแล้ว! สามารถกดเล่นหรือดาวน์โหลดได้เลย';
+      };
+
+      mediaRecorder.start();
+      reelStatusText.textContent = 'กำลังเรนเดอร์แอนิเมชัน & บันทึกเสียงเพลง Beat-Sync...';
+
+      const startTime = performance.now();
+
+      function animate(now) {
+        const elapsed = (now - startTime) / 1000;
+        if (elapsed >= totalDuration) {
+          mediaRecorder.stop();
+          return;
+        }
+
+        const imgIdx = Math.floor(elapsed / secPerImg) % loadedImgs.length;
+        const progressInImg = (elapsed % secPerImg) / secPerImg;
+        const currentImg = loadedImgs[imgIdx];
+        const nextImg = loadedImgs[(imgIdx + 1) % loadedImgs.length];
+
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, W, H);
+
+        // Draw background blurred
+        ctx.save();
+        ctx.filter = 'blur(40px) brightness(0.6)';
+        ctx.drawImage(currentImg, -50, -50, W + 100, H + 100);
+        ctx.restore();
+
+        // Ken Burns Zoom Math
+        let zoom = 1.0;
+        if (effectType === 'kenburns') {
+          zoom = 1.0 + progressInImg * 0.15; // Smooth zoom 1.0x to 1.15x
+        }
+
+        const scale = Math.min((W * 0.92) / currentImg.width, (H * 0.82) / currentImg.height) * zoom;
+        const dw = currentImg.width * scale;
+        const dh = currentImg.height * scale;
+        const dx = (W - dw) / 2;
+        const dy = (H - dh) / 2;
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowBlur = 40;
+
+        // Crossfade transition in last 0.4s of image
+        if (progressInImg > 0.8 && nextImg && effectType === 'crossfade') {
+          const fadeAlpha = (progressInImg - 0.8) / 0.2;
+          ctx.globalAlpha = 1 - fadeAlpha;
+          ctx.drawImage(currentImg, dx, dy, dw, dh);
+          ctx.restore();
+
+          // Draw next image fading in
+          ctx.save();
+          ctx.globalAlpha = fadeAlpha;
+          const nextScale = Math.min((W * 0.92) / nextImg.width, (H * 0.82) / nextImg.height);
+          const ndw = nextImg.width * nextScale;
+          const ndh = nextImg.height * nextScale;
+          ctx.drawImage(nextImg, (W - ndw) / 2, (H - ndh) / 2, ndw, ndh);
+          ctx.restore();
+        } else {
+          ctx.drawImage(currentImg, dx, dy, dw, dh);
+          ctx.restore();
+        }
+
+        // Draw TikTok / Reel Overlay Graphics
+        ctx.save();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 24px Plus Jakarta Sans, sans-serif';
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 10;
+        ctx.fillText('✨ PINTEREST AESTHETIC REEL', 30, 80);
+
+        ctx.fillStyle = '#f43f5e';
+        ctx.fillRect(30, 95, (W - 60) * (elapsed / totalDuration), 4);
+        ctx.restore();
+
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    });
+
+    downloadReelBtn.addEventListener('click', () => {
+      if (!recordedReelBlob) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(recordedReelBlob);
+      a.download = 'pinterest_tiktok_reel_9x16.webm';
       a.click();
     });
 
@@ -603,13 +920,11 @@ function renderHTML(): string {
       img.crossOrigin = 'anonymous';
       img.src = '/api/proxy-download?url=' + encodeURIComponent(currentMediaUrl);
       img.onload = () => {
-        // 1. Draw blurred stretched background
         ctx.save();
         ctx.filter = 'blur(40px) brightness(0.7)';
         ctx.drawImage(img, -40, -40, w + 80, h + 80);
         ctx.restore();
 
-        // 2. Draw centered crisp foreground image
         const scale = Math.min((w * 0.9) / img.width, (h * 0.9) / img.height);
         const dw = img.width * scale;
         const dh = img.height * scale;
