@@ -43,7 +43,7 @@ function renderHTML(): string {
       <div class="flex items-center gap-2">
         <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Reels Generator Live
+          Reels Generator Ready
         </span>
       </div>
     </div>
@@ -82,7 +82,7 @@ function renderHTML(): string {
           <input 
             type="url" 
             id="urlInput" 
-            placeholder="วางลิงก์ Pin เดี่ยว เช่น https://www.pinterest.com/pin/..." 
+            placeholder="วางลิงก์ Pin เดี่ยว เช่น https://www.pinterest.com/pin/566327721915390351/" 
             required
             class="flex-1 bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-white placeholder-slate-500"
           />
@@ -164,7 +164,7 @@ function renderHTML(): string {
         <textarea 
           id="batchUrlsInput" 
           rows="6" 
-          placeholder="https://www.pinterest.com/pin/123456789/&#10;https://www.pinterest.com/pin/987654321/&#10;https://www.pinterest.com/username/boardname/"
+          placeholder="https://www.pinterest.com/pin/566327721915390351/&#10;https://www.pinterest.com/pin/430867889374864569/"
           class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-4 text-xs font-mono text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder-slate-600"
         ></textarea>
         
@@ -246,6 +246,40 @@ function renderHTML(): string {
         <p class="text-slate-400 text-xs md:text-sm max-w-xl mx-auto">
           AI แปลงรูปภาพในบอร์ดให้กลายเป็นคลิปวิดีโอแนวตั้ง 9:16 อัตโนมัติ พร้อม Ken Burns Zooming, Smooth Transition และดนตรี Beat-Sync จังหวะเพลงลง TikTok/IG ทันที!
         </p>
+      </div>
+
+      <!-- Quick Actions & Image Queue Bar -->
+      <div class="glass-card rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center text-sm font-bold">
+            🖼️
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-white">รูปภาพในคิวสร้างคลิป: <span id="reelsQueueCount" class="text-pink-400 font-extrabold">0</span> ภาพ</h4>
+            <p class="text-[10px] text-slate-400">ใส่ลิงก์ด้านล่าง หรือกดโหลดภาพตัวอย่างเพื่อทดสอบได้ทันที</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="loadDemoPinsBtn" class="bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5">
+            ✨ โหลดภาพตัวอย่างทันที (Demo)
+          </button>
+        </div>
+      </div>
+
+      <!-- Direct Input Box inside Reels Tab -->
+      <div class="glass-card rounded-2xl p-4 shadow-xl">
+        <form id="reelsDirectForm" class="flex flex-col sm:flex-row gap-2">
+          <input 
+            type="url" 
+            id="reelsDirectUrlInput" 
+            placeholder="วางลิงก์ Pinterest Pin ที่นี่เพื่อเพิ่มเข้าคลิป..." 
+            class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500"
+          />
+          <button type="submit" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 whitespace-nowrap">
+            ➕ เพิ่มเข้าคลิป
+          </button>
+        </form>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -379,6 +413,7 @@ function renderHTML(): string {
       } else if (target === 'reels') {
         tabReelsBtn.classList.add('tab-active', 'text-white');
         sectionReels.classList.remove('hidden');
+        updateReelsQueueCount();
       }
     }
 
@@ -392,7 +427,15 @@ function renderHTML(): string {
     let currentThumbnailUrl = '';
     let currentTitle = '';
     let currentPalette = [];
-    let savedMoodboardImages = [];
+    let savedMoodboardImages = [
+      'https://i.pinimg.com/originals/1b/73/c0/1b73c02835aaf327fbe2ac32d84fba00.png',
+      'https://i.pinimg.com/originals/d5/3b/01/d53b014d86a6b6761bf649a0ed813c2b.png'
+    ];
+
+    function updateReelsQueueCount() {
+      const el = document.getElementById('reelsQueueCount');
+      if (el) el.textContent = savedMoodboardImages.length;
+    }
 
     // ================= SINGLE PIN LOGIC =================
     const form = document.getElementById('extractForm');
@@ -458,6 +501,7 @@ function renderHTML(): string {
 
           if (!savedMoodboardImages.includes(currentMediaUrl)) {
             savedMoodboardImages.push(currentMediaUrl);
+            updateReelsQueueCount();
           }
         }
 
@@ -496,6 +540,7 @@ function renderHTML(): string {
     addToMoodboardBtn.addEventListener('click', () => {
       if (currentMediaUrl && !savedMoodboardImages.includes(currentMediaUrl)) {
         savedMoodboardImages.push(currentMediaUrl);
+        updateReelsQueueCount();
         alert('เพิ่มภาพนี้เข้าสู่ Reels / Moodboard แล้ว!');
         switchTab('reels');
       }
@@ -552,6 +597,7 @@ function renderHTML(): string {
           }
         });
 
+        updateReelsQueueCount();
         batchSuccessCount.textContent = extractedBatchItems.length;
 
         // Render preview cards
@@ -680,8 +726,50 @@ function renderHTML(): string {
     const reelMusic = document.getElementById('reelMusic');
     const reelRecordingBadge = document.getElementById('reelRecordingBadge');
     const reelStatusText = document.getElementById('reelStatusText');
+    const loadDemoPinsBtn = document.getElementById('loadDemoPinsBtn');
+    const reelsDirectForm = document.getElementById('reelsDirectForm');
+    const reelsDirectUrlInput = document.getElementById('reelsDirectUrlInput');
 
     let recordedReelBlob = null;
+
+    // Load Demo Pins Button
+    loadDemoPinsBtn.addEventListener('click', () => {
+      savedMoodboardImages = [
+        'https://i.pinimg.com/originals/1b/73/c0/1b73c02835aaf327fbe2ac32d84fba00.png',
+        'https://i.pinimg.com/originals/d5/3b/01/d53b014d86a6b6761bf649a0ed813c2b.png'
+      ];
+      updateReelsQueueCount();
+      alert('โหลดภาพตัวอย่างไอเดียสวยงาม 2 ภาพเข้าสู่คิวเรียบร้อย! สามารถกด "สร้าง & อัดคลิปวิดีโอ" ได้ทันทีครับ');
+    });
+
+    // Direct Pin Input inside Reels Tab
+    reelsDirectForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = reelsDirectUrlInput.value.trim();
+      if (!url) return;
+
+      reelStatusText.textContent = 'กำลังดึงภาพเพื่อเพิ่มเข้าคิวคลิป...';
+      try {
+        const res = await fetch('/api/extract', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to extract');
+
+        const m = data.media[0];
+        const imgUrl = m.originalUrl || m.url;
+        if (!savedMoodboardImages.includes(imgUrl)) {
+          savedMoodboardImages.push(imgUrl);
+        }
+        updateReelsQueueCount();
+        reelsDirectUrlInput.value = '';
+        reelStatusText.textContent = '✅ เพิ่ม "' + data.title + '" เข้าคิวคลิปสำเร็จแล้ว! (รวม ' + savedMoodboardImages.length + ' ภาพ)';
+      } catch (err) {
+        alert('เกิดข้อผิดพลาด: ' + err.message);
+      }
+    });
 
     reelSpeed.addEventListener('input', () => {
       speedValText.textContent = reelSpeed.value + ' วินาที / รูป';
@@ -700,7 +788,6 @@ function renderHTML(): string {
       osc.connect(gain);
       gain.connect(dest);
 
-      // Create ambient chord progression
       osc.type = mood === 'upbeat' ? 'sawtooth' : 'sine';
       osc.frequency.setValueAtTime(mood === 'upbeat' ? 140 : 220, audioCtx.currentTime);
 
@@ -731,7 +818,7 @@ function renderHTML(): string {
     generateReelBtn.addEventListener('click', async () => {
       const imagesToRender = savedMoodboardImages.slice(0, 8);
       if (imagesToRender.length === 0) {
-        alert('กรุณาดึงภาพอย่างน้อย 1-2 ภาพจาก Tab 1 หรือ Tab 2 ก่อนสร้างคลิปครับ!');
+        alert('กรุณาวางลิงก์ภาพ หรือกดปุ่ม "✨ โหลดภาพตัวอย่างทันที" ก่อนสร้างคลิปครับ!');
         return;
       }
 
@@ -833,7 +920,7 @@ function renderHTML(): string {
         // Ken Burns Zoom Math
         let zoom = 1.0;
         if (effectType === 'kenburns') {
-          zoom = 1.0 + progressInImg * 0.15; // Smooth zoom 1.0x to 1.15x
+          zoom = 1.0 + progressInImg * 0.15;
         }
 
         const scale = Math.min((W * 0.92) / currentImg.width, (H * 0.82) / currentImg.height) * zoom;
@@ -846,14 +933,12 @@ function renderHTML(): string {
         ctx.shadowColor = 'rgba(0,0,0,0.7)';
         ctx.shadowBlur = 40;
 
-        // Crossfade transition in last 0.4s of image
         if (progressInImg > 0.8 && nextImg && effectType === 'crossfade') {
           const fadeAlpha = (progressInImg - 0.8) / 0.2;
           ctx.globalAlpha = 1 - fadeAlpha;
           ctx.drawImage(currentImg, dx, dy, dw, dh);
           ctx.restore();
 
-          // Draw next image fading in
           ctx.save();
           ctx.globalAlpha = fadeAlpha;
           const nextScale = Math.min((W * 0.92) / nextImg.width, (H * 0.82) / nextImg.height);
