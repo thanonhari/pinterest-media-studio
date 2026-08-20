@@ -1,0 +1,5 @@
+# AI Agent Quality Rules
+Before completing any task:
+1. Always run `npm run check` (Oxlint + TypeScript).
+2. Do not use `any`, chained type assertions (`as unknown as T`), or non-null assertions (`!`).
+3. Ensure all types are strictly guarded and validated.

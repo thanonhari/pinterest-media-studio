@@ -1,0 +1,35 @@
+{
+  "name": "cliptoproject",
+  "version": "1.0.0",
+  "description": "Anti-Slop AI Code Quality Demo & Template",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/server/web-server.ts",
+    "serve": "tsx src/server/web-server.ts",
+    "start": "tsx src/server/web-server.ts",
+    "test": "tsx src/test-runner.ts",
+    "lint": "oxlint src --deny-warnings",
+    "lint:fix": "oxlint src --fix",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck"
+  },
+  "keywords": [
+    "oxlint",
+    "anti-slop",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/archiver": "^8.0.0",
+    "@types/node": "^26.2.0",
+    "oxlint": "^1.79.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "cheerio": "^1.2.0"
+  }
+}
